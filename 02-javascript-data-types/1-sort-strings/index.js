@@ -12,6 +12,6 @@ export function sortStrings(arr, param = 'asc') {
   } else if (param === 'desc') {
     return resultArr.sort((a, b) => collator.compare(b, a));
   }
-  console.log('unknown param');
-  return null;
+  console.error('unknown param');
+  return resultArr;
 }
