@@ -7,10 +7,11 @@
 export function sortStrings(arr, param = 'asc') {
   const resultArr = [...arr];
   const collator = new Intl.Collator('ru', {caseFirst: "upper"});
-
-  function compare(a, b) {
-    return collator.compare(a, b); //a.localeCompare(b);
+  if (param === 'asc') {
+    return resultArr.sort((a, b) => collator.compare(a, b));
+  } else if (param === 'desc') {
+    return resultArr.sort((a, b) => collator.compare(b, a));
   }
-
-  return param === 'asc' ? resultArr.sort(compare) : resultArr.sort(compare).reverse();
+  console.log('unknown param');
+  return null;
 }
