@@ -5,5 +5,5 @@
  */
 export function uniq(arr) {
   const uniqSet = new Set(arr);
-  return [...uniqSet]
+  return [...uniqSet];
 }
