@@ -6,8 +6,11 @@
  */
 export function trimSymbols(string, size) {
   let resultString = '';
+  if (size === 0) {
+    return '';
+  }
   if (size === undefined) {
-    resultString = string;
+    return string;
   }
   return resultString;
 }
