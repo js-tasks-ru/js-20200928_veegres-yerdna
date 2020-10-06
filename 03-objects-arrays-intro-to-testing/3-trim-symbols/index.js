@@ -14,16 +14,16 @@ export function trimSymbols(string, size) {
   let resultString = '';
   let prevChar;
   let repeatCount = 0;
-  for (let i = 0; i < string.length; i++) {
-    if (prevChar === string[i]) {
+  for (const curChar of string) {
+    if (prevChar === curChar) {
       repeatCount += 1;
     } else {
       repeatCount = 0;
     }
     if (repeatCount < size) {
-      resultString += string[i];
+      resultString += curChar;
     }
-    prevChar = string[i];
+    prevChar = curChar;
   }
   return resultString;
 }

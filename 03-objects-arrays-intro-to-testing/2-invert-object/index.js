@@ -6,8 +6,7 @@
 export function invertObj(obj) {
   if (obj) {
     const resultObj = {};
-    const mapForInvert = new Map(Object.entries(obj));
-    mapForInvert.forEach((value, key) => resultObj[value] = key);
+    Object.entries(obj).forEach(([key, value]) => resultObj[value] = key);
     return resultObj;
   }
   return obj;
