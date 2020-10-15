@@ -24,7 +24,7 @@ export default class NotificationMessage {
   render() {
     const element = document.createElement('div');
     element.innerHTML = `
-        <div class="notification ${this.type}" style="--value:${this.getSecDuration()}">
+        <div class="notification ${this.type}" style="--value:${this.getSecDuration()}s">
             <div class="timer"></div>
             <div class="inner-wrapper">
             <div class="notification-header">${this.type}</div>
