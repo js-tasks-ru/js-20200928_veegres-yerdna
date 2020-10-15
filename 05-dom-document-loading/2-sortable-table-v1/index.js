@@ -2,7 +2,7 @@ export default class SortableTable {
 
   element;
 
-  constructor(header = [], {data} = {}) {
+  constructor(header = [], {data = []} = {}) {
     this.header = header;
     this.data = data;
 
@@ -10,37 +10,32 @@ export default class SortableTable {
   }
 
   sort(fieldValue, orderValue) {
+    const sortedData = this.sortData(fieldValue, orderValue);
+
+    this.remove();
+    const e = new SortableTable(this.header, { sortedData });
+    document.body.append(e.element);
+  }
+
+  sortData(fieldValue, orderValue) {
     switch (fieldValue) {
-      case 'title': {
-        sortStrings();
-        break;
+    case 'title': {
+      const collator = new Intl.Collator('ru', {caseFirst: "upper"});
+      if (orderValue === 'asc') {
+        return this.data.sort((a, b) => collator.compare(a[fieldValue], b[fieldValue]));
+      } else if (orderValue === 'desc') {
+        return this.data.sort((a, b) => collator.compare(b[fieldValue], a[fieldValue]));
       }
-      case 'quantity':
-      case 'price':
-      case 'sales':
-        break;
-      default:
-        return;
     }
-    const sortedData = this.sortData(fieldValue, orderValue, this.data);
-
-  }
-
-  sortStrings(arr, param) {
-    const resultArr = [...arr];
-    const collator = new Intl.Collator('ru', {caseFirst: "upper"});
-    if (param === 'asc') {
-      return resultArr.sort((a, b) => collator.compare(a, b));
-    } else if (param === 'desc') {
-      return resultArr.sort((a, b) => collator.compare(b, a));
+    case 'quantity':
+    case 'price':
+    case 'sales': {
+      const sorting = orderValue === 'asc' ? 1 : -1;
+      return this.data.sort((a, b) => sorting * (a[fieldValue] - b[fieldValue]));
     }
-    return resultArr;
-  }
-
-  render() {
-    const element = document.createElement('div');
-    element.innerHTML = this.createTable();
-    this.element = element.firstElementChild;
+    default:
+      return this.data;
+    }
   }
 
   createHeaderRowColumn(id, title, order) {
@@ -84,6 +79,13 @@ export default class SortableTable {
       </div>
     `;
 
+  }
+
+  render() {
+    const element = document.createElement('div');
+    element.innerHTML = this.createTable();
+    this.element = element.firstElementChild;
+    return element;
   }
 
   remove() {

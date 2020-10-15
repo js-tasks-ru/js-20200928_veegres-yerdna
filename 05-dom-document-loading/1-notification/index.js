@@ -1,5 +1,4 @@
 export default class NotificationMessage {
-
   element;
 
   constructor(message = '', {duration = 0, type = ''} = {}) {
