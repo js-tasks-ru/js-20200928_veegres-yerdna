@@ -41,7 +41,7 @@ export default class SortableTable {
     return sortTable;
   }
 
-  getTable (products) {
+  getTable(products) {
     const table = [];
     for (let product of products) {
       table.push(this.createDataRow(product));
@@ -60,32 +60,37 @@ export default class SortableTable {
     `;
   }
 
-  createHeaderRow() {
-    return `
-        <div data-element="header" class="sortable-table__header sortable-table__row">
-            ${this.header.map((value) => this.createHeaderRowColumn({ value })).join('')}
-        </div>
-    `;
+  createHeaderRow(arr, field = 'title', order = '') {
+    return arr.map(({title, id, sortable}) => {
+      return `
+        <div class="sortable-table__cell" data-id="${id}" data-sortable="${sortable}" data-order="${field === id ? order : ''}">
+          <span>${title} ${field === id ? order : ''}</span>
+           <span class="sortable-table__sort-arrow">
+            <span class="sort-arrow"/>
+          </span>
+        </div>`;
+    }).join('');
   }
 
-  createDataRow(colInfo) {
+
+  createDataRow({title = '', images = [], quantity = 0, price = 0, sales = 0} = {}) {
+    const image = (images.length > 0) ? `<img class="sortable-table-image" alt="Image" src="${images[0].url}">` : '';
     return `
-        <a href="" class="sortable-table__row">
-            <div class="sortable-table__cell">
-                <img class="sortable-table-image" alt="Image" src="${colInfo.images[0].url}">
-            </div>
-            <div class="sortable-table__cell">${colInfo.title}</div>
-            <div class="sortable-table__cell">${colInfo.quantity}</div>
-            <div class="sortable-table__cell">${colInfo.price}</div>
-            <div class="sortable-table__cell">${colInfo.sales}</div>
-        </a>
-    `;
+      <a href="/products/3d-ochki-epson-elpgs03" class="sortable-table__row">
+        <div class="sortable-table__cell">${image}</div>
+        <div class="sortable-table__cell">${title}</div>
+        <div class="sortable-table__cell">${quantity}</div>
+        <div class="sortable-table__cell">${price}</div>
+        <div class="sortable-table__cell">${sales}</div>
+      </a>`;
   }
 
   createTable() {
     return `
       <div class="sortable-table">
-        ${this.createHeaderRow()}
+         <div data-element="header" class="sortable-table__header sortable-table__row">
+            ${this.createHeaderRow(this.header)}
+        </div>
         <div data-element="body" class="sortable-table__body">
             ${this.data.map((colInfo) => this.createDataRow(colInfo)).join('')}
         </div>

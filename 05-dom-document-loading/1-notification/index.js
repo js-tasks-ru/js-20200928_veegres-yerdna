@@ -1,13 +1,15 @@
 export default class NotificationMessage {
   element;
+  static showedElement;
+
 
   constructor(message = '', {duration = 0, type = ''} = {}) {
     this.message = message;
     this.duration = duration;
     this.type = type;
 
-    if (NotificationMessage.showed) {
-      NotificationMessage.showed.remove();
+    if (NotificationMessage.showedElement) {
+      NotificationMessage.showedElement.remove();
     }
 
     this.render();
@@ -33,7 +35,7 @@ export default class NotificationMessage {
     </div>
     `;
     this.element = element.firstElementChild;
-    NotificationMessage.showed = this.element;
+    NotificationMessage.showedElement = this.element;
   }
 
   getSecDuration() {
