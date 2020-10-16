@@ -1,6 +1,7 @@
 export default class SortableTable {
 
   element;
+  subElements;
 
   constructor(header = [], {data = []} = {}) {
     this.header = header;
@@ -11,34 +12,44 @@ export default class SortableTable {
 
   sort(fieldValue, orderValue) {
     const sortedData = this.sortData(fieldValue, orderValue);
-
-    this.remove();
-    const e = new SortableTable(this.header, { sortedData });
-    document.body.append(e.element);
+    this.subElements.body.innerHTML = this.getTable(sortedData);
   }
 
-  sortData(fieldValue, orderValue) {
-    switch (fieldValue) {
-    case 'title': {
-      const collator = new Intl.Collator('ru', {caseFirst: "upper"});
-      if (orderValue === 'asc') {
-        return this.data.sort((a, b) => collator.compare(a[fieldValue], b[fieldValue]));
-      } else if (orderValue === 'desc') {
-        return this.data.sort((a, b) => collator.compare(b[fieldValue], a[fieldValue]));
+  sortData(field, order) {
+    const sortTable = [...this.data];
+    const currentHeaderItem = this.header.find(item => item.id === field);
+    const sortType = currentHeaderItem ? currentHeaderItem.sortType : '';
+
+    sortTable.sort((item1, item2) => {
+      const a = item1[field];
+      const b = item2[field];
+      const c = (order === 'desc') ? -1 : 1;
+
+      switch (sortType) {
+      case 'number':
+        return c * (a - b);
+        // break;
+      case 'string':
+        return c * a.localeCompare(b, ['ru', 'en'], {caseFirst: 'upper'});
+        // break;
+      default:
+        console.error(1111);
+        break;
       }
-    }
-    case 'quantity':
-    case 'price':
-    case 'sales': {
-      const sorting = orderValue === 'asc' ? 1 : -1;
-      return this.data.sort((a, b) => sorting * (a[fieldValue] - b[fieldValue]));
-    }
-    default:
-      return this.data;
-    }
+      // return res;
+    });
+    return sortTable;
   }
 
-  createHeaderRowColumn(id, title, order) {
+  getTable (products) {
+    const table = [];
+    for (let product of products) {
+      table.push(this.createDataRow(product));
+    }
+    return table.join('');
+  }
+
+  createHeaderRowColumn({id, title, order}) {
     return `
         <div class="sortable-table__cell" data-id="${id}" data-sortable="false" data-order="${order}">
             <span>${title}</span>
@@ -52,7 +63,7 @@ export default class SortableTable {
   createHeaderRow() {
     return `
         <div data-element="header" class="sortable-table__header sortable-table__row">
-            ${this.header.map((value) => this.createHeaderRowColumn(value.id, value.title, value.order)).join('\n')}
+            ${this.header.map((value) => this.createHeaderRowColumn({ value })).join('')}
         </div>
     `;
   }
@@ -75,17 +86,28 @@ export default class SortableTable {
     return `
       <div class="sortable-table">
         ${this.createHeaderRow()}
-        ${this.data.map((colInfo) => this.createDataRow(colInfo)).join('\n')}
+        <div data-element="body" class="sortable-table__body">
+            ${this.data.map((colInfo) => this.createDataRow(colInfo)).join('')}
+        </div>
       </div>
     `;
 
+  }
+
+  getSubElements(element) {
+    const elements = element.querySelectorAll('[data-element]');
+
+    return [...elements].reduce((acc, item) => {
+      acc[item.dataset.element] = item;
+      return acc;
+    }, {});
   }
 
   render() {
     const element = document.createElement('div');
     element.innerHTML = this.createTable();
     this.element = element.firstElementChild;
-    return element;
+    this.subElements = this.getSubElements(this.element);
   }
 
   remove() {
