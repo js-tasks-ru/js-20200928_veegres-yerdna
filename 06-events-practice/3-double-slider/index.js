@@ -27,7 +27,7 @@ export default class DoubleSlider {
       moveAt(event.pageX);
 
       function moveAt(pageX) {
-        leftSlider.style.left = pageX - 1;
+        leftSlider.style.left = pageX ;
       }
 
       function onMouseMove(event) {
