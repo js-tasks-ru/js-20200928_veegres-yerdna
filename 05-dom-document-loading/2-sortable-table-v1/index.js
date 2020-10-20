@@ -28,15 +28,11 @@ export default class SortableTable {
       switch (sortType) {
       case 'number':
         return c * (a - b);
-        // break;
       case 'string':
         return c * a.localeCompare(b, ['ru', 'en'], {caseFirst: 'upper'});
-        // break;
       default:
-        console.error(1111);
         break;
       }
-      // return res;
     });
     return sortTable;
   }
