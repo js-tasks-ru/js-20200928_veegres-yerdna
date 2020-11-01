@@ -22,7 +22,9 @@ export default class DoubleSlider {
 
       this.dragging.style.left = this.subElements.progress.style.left = newLeft + '%';
       this.subElements.from.innerHTML = this.formatValue(this.getValue().from);
-    } else {
+    }
+
+    if (this.dragging === this.subElements.thumbRight) {
       let newRight = (innerRight - event.clientX - this.shiftX) / width;
 
       if (newRight < 0) {
@@ -53,14 +55,14 @@ export default class DoubleSlider {
   };
 
   constructor({
-    min = 100,
-    max = 200,
-    formatValue = value => '$' + value,
-    selected = {
-      from: min,
-      to: max
-    }
-  } = {}) {
+                min = 100,
+                max = 200,
+                formatValue = value => '$' + value,
+                selected = {
+                  from: min,
+                  to: max
+                }
+              } = {}) {
     this.min = min;
     this.max = max;
     this.formatValue = formatValue;
@@ -99,8 +101,10 @@ export default class DoubleSlider {
   }
 
   initEventListeners() {
-    this.subElements.thumbLeft.addEventListener('pointerdown', event => this.onThumbPointerDown(event));
-    this.subElements.thumbRight.addEventListener('pointerdown', event => this.onThumbPointerDown(event));
+    const { thumbLeft, thumbRight } = this.subElements;
+
+    thumbLeft.addEventListener('pointerdown', event => this.onThumbPointerDown(event));
+    thumbRight.addEventListener('pointerdown', event => this.onThumbPointerDown(event));
   }
 
   getSubElements(element) {
